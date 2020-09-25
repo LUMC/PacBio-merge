@@ -7,7 +7,10 @@ from merge_ccs import merge_count_dict
 # Source dict, times, merged dict
 TEST = [
         ( {'value': {'count': 5}}, 1, {'value': {'count': 5}}),
-        #( {'value': {'count': 5}}, 2, {'value': {'count': 10}}),
+        ( {'value': {'count': 5}}, 2, {'value': {'count': 10}}),
+        ( {'value': {'extra_key': {'count': 5}}}, 1, {'value': {'extra_key': {'count': 5}}}),
+        ( {'value': {'extra_key': {'count': 5}}}, 3, {'value': {'extra_key':
+            {'count': 15}}}),
 ]
 
 @pytest.mark.parametrize(['source', 'times', 'target'], TEST)

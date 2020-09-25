@@ -15,7 +15,14 @@ def merge_count_dict(dictionaries):
     for d in dictionaries:
         for key, value in d.items():
             # Is this the first time we see key
-            merged[key] = value
+            if key not in merged:
+                merged[key] = value
+            # if the value is another dictionary
+            elif isinstance(value, dict):
+                    merged[key] = merge_count_dict([value, merged[key]])
+            else:
+                merged[key] += value
+
 
 
     return merged
