@@ -150,6 +150,37 @@ def parse_files(filelist, write_inputs):
     return dataset
 
 
+def write_toplevel_counts(merged, filename):
+    """
+    Write the top level counts, and return the mapping between the key and
+    the letter (A), (B) etc
+    """
+    with open(filename, 'wt') as fout:
+        # Only the top level keys can have subsections
+        keys = list(merged.keys())
+        # Lets say we only support 26 top level sections
+        assert len(keys) <= len(string.ascii_uppercase)
+        # We have to have a dict to keep track with subsection (A,B,C etc) the top level keys belong in
+        subsections = dict()
+        for key, letter in zip(keys, string.ascii_uppercase):
+            subsections[key] = letter
+            print(f'{key} ({letter}) : {merged[key]["count"]}', file=fout)
+            # Remove the counts from the merged data, since we already
+            # outputted those
+            merged[key].pop('count')
+        return subsections
+
+
+def write_subsection(data, letter, fout):
+    if not data:
+        return
+    # Lets start with a newline
+    print(file=fout)
+    for section, counts in data.items():
+        print(f'{section} for ({letter}):', file=fout)
+        for heading in counts:
+            print(f'{heading} : {counts[heading]["count"]}', file=fout)
+
 def write_pacbio_report(merged, filename):
     """
     Write the merged data back into PacBio format
@@ -178,16 +209,19 @@ def write_pacbio_report(merged, filename):
     Below SNR threshold      : 0
     Lacking full passes      : 22
     """
-    with open(filename, 'wt') as fout:
-        # Only the top level keys can have subsections
-        keys = list(merged.keys())
-        # Lets say we only support 26 top level sections
-        assert len(keys) <= len(string.ascii_uppercase)
-        # We have to have a dict to keep track with subsection (A,B,C etc) the top level keys belong in
-        subsections = dict()
-        for key, letter in zip(keys, string.ascii_uppercase):
-            subsections[key] = letter
-            print(f'{key} ({letter}) : {merged[key]["count"]}', file=fout)
+    # First, we write the top level sections, and keep track of which letter is
+    # used to annotate them
+    subsections = write_toplevel_counts(merged, filename)
+
+    # Then we write the rest of the data
+    with open(filename, 'at') as fout:
+        for key, value in merged.items():
+            write_subsection(value, subsections[key], fout)
+            #if value:
+            #    print(f'{key} for ({subsections[key]}):', file=fout)
+            #for entry in value:
+            #    print(f'{entry} : {entry["count"]}')
+    print(json.dumps(merged, indent=True))
 
 
 def main(args):
