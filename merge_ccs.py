@@ -3,7 +3,7 @@
 import argparse
 import re
 import json
-
+import string
 
 
 def merge_count_dict(dictionaries):
@@ -150,6 +150,46 @@ def parse_files(filelist, write_inputs):
     return dataset
 
 
+def write_pacbio_report(merged, filename):
+    """
+    Write the merged data back into PacBio format
+
+    The merged data looks like this:
+     "ZMWs filtered": {
+      "count": 24,
+      "Exclusive ZMW counts": {
+       "Median length filter": {
+        "count": 0
+       },
+       "Below SNR threshold": {
+        "count": 0
+       },
+       "Lacking full passes": {
+        "count": 22
+       },
+      }
+     }
+
+    The PacBio equivalent of this is:
+    ZMWs filtered       (C)  : 24
+
+    Exclusive ZMW counts for (C):
+    Median length filter     : 0
+    Below SNR threshold      : 0
+    Lacking full passes      : 22
+    """
+    with open(filename, 'wt') as fout:
+        # Only the top level keys can have subsections
+        keys = list(merged.keys())
+        # Lets say we only support 26 top level sections
+        assert len(keys) <= len(string.ascii_uppercase)
+        # We have to have a dict to keep track with subsection (A,B,C etc) the top level keys belong in
+        subsections = dict()
+        for key, letter in zip(keys, string.ascii_uppercase):
+            subsections[key] = letter
+            print(f'{key} ({letter}) : {merged[key]["count"]}', file=fout)
+
+
 def main(args):
     dataset = parse_files(args.reports, args.write_input_json)
     # Merge the dictionaries
@@ -158,6 +198,9 @@ def main(args):
     if args.json_output:
         with open(args.json_output, 'wt') as fout:
             print(json.dumps(merged, indent=True), file=fout)
+
+    if args.PacBio_output:
+        write_pacbio_report(merged, args.PacBio_output)
 
 
 if __name__ == '__main__':
@@ -169,7 +212,12 @@ if __name__ == '__main__':
                         help='PacBio reports to merge')
     parser.add_argument('--json-output',
                         required=False,
-                        help='Write the merged json to this file')
+                        help='Write the merged data in json format to this '
+                             'file')
+    parser.add_argument('--PacBio-output',
+                        required=False,
+                        help='Write the merged data in PacBio report format '
+                             'to this file')
     parser.add_argument('--write-input-json',
                         required=False,
                         default=False,
