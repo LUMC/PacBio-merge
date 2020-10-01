@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-import logging
+import argparse
 import re
-import sys
 import json
 
-from collections import OrderedDict
 
 
 def merge_count_dict(dictionaries):
@@ -139,16 +137,42 @@ def parse_line(line):
 
     return data
 
-if __name__ == '__main__':
+
+def parse_files(filelist, write_inputs):
     dataset = list()
-    for filename in sys.argv[1:]:
+    for filename in filelist:
         with open(filename) as fin:
             data = parse_PacBio_log(fin)
             dataset.append(data)
-            with open(filename+'.json', 'wt') as fout:
-                print(json.dumps(data, indent=True), file=fout)
+            if write_inputs:
+                with open(filename+'.json', 'wt') as fout:
+                    print(json.dumps(data, indent=True), file=fout)
+    return dataset
 
+
+def main(args):
+    dataset = parse_files(args.reports, args.write_input_json)
     # Merge the dictionaries
     merged = merge_count_dict(dataset)
-    with open('merged.json', 'wt') as fout:
-        print(json.dumps(merged, indent=True), file=fout)
+
+    if args.json_output:
+        with open(args.json_output, 'wt') as fout:
+            print(json.dumps(merged, indent=True), file=fout)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--reports',
+                        required=True,
+                        nargs='+',
+                        help='PacBio reports to merge')
+    parser.add_argument('--json-output',
+                        required=False,
+                        help='Write the merged json to this file')
+    parser.add_argument('--write-input-json',
+                        required=False,
+                        default=False,
+                        help='Write the input files to json')
+    args = parser.parse_args()
+    main(args)
