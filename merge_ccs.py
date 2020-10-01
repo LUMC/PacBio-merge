@@ -17,13 +17,11 @@ def merge_count_dict(dictionaries):
             # Is this the first time we see key
             if key not in merged:
                 merged[key] = value
-            # if the value is another dictionary
+            # If the value is another dictionary
             elif isinstance(value, dict):
                     merged[key] = merge_count_dict([value, merged[key]])
             else:
                 merged[key] += value
-
-
 
     return merged
 
@@ -151,13 +149,6 @@ if __name__ == '__main__':
                 print(json.dumps(data, indent=True), file=fout)
 
     # Merge the dictionaries
-    merged = dict()
-    for data in dataset:
-        for key in data:
-            if key not in merged:
-                merged[key] = data[key]
-            elif 'count' in merged[key]:
-                merged[key]['count']+= data[key]['count']
-
+    merged = merge_count_dict(dataset)
     with open('merged.json', 'wt') as fout:
         print(json.dumps(merged, indent=True), file=fout)
