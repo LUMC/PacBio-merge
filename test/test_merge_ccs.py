@@ -1,7 +1,7 @@
 import pytest
 import sys
 sys.path.insert(0, '.')
-from merge_ccs import merge_count_dict
+from pacbio_merge import merge_count_dict
 
 # Testdata where we merge a dict into itself
 # Source dict, times, merged dict
