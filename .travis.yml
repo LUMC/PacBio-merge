@@ -36,3 +36,7 @@ matrix:
   include:
     - env:
       - TEST="test-legacy-script"
+    - env:
+      - TEST="test-script-invalid-command"
+    - env:
+      - TEST="test-script-single-input"

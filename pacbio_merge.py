@@ -226,12 +226,32 @@ def write_pacbio_report(merged, filename):
             #    print(f'{entry} : {entry["count"]}')
     print(json.dumps(merged, indent=True))
 
+def parse_report_json(filelist):
+    dataset = list()
+    for filename in filelist:
+        with open(filename) as fin:
+            data = json.load(fin)
+            dataset.append(data)
+    return dataset
+
+
+def merge_json_reports(dataset):
+    """ Merge the json reports """
+    merged = dataset.pop()
+    for data in dataset:
+        assert data['id'] == merged['id']
+
+    return merged
 
 def main(args):
     if args.legacy:
         dataset = parse_legacy_files(args.reports, args.write_input_json)
         # Merge the dictionaries
         merged = merge_legacy_count_dict(dataset)
+    else:
+        dataset = parse_report_json(args.reports)
+        # Merge the dictionaries
+        merged = merge_json_reports(dataset)
 
     if args.json_output:
         with open(args.json_output, 'wt') as fout:

@@ -31,6 +31,7 @@
         - 'Empty coverage windows.*: 0'
         - 'CCS did not converge.*: 0'
         - 'Unknown error.*: 0'
+
 - name: test-script-invalid-command
   tags:
     - integration
@@ -42,3 +43,25 @@
   stderr:
     contains:
       - '--PacBio-output is only supported with legacy input'
+
+- name: test-script-single-input
+  tags:
+    - integration
+  command: >
+    python3 pacbio_merge.py
+    --json-output merged.json
+    --reports test/v5.0.0/batch.1.march_chunk1.ccs.report.json
+  files:
+    - path: 'merged.json'
+      contains:
+        - '"id": "ccs_processing",'
+        - '"name": "ZMWs input",'
+        - '"value": 23'
+        - '"name": "ZMWs pass filters",'
+        - '"value": 10'
+        - '"name": "ZMWs fail filters",'
+        - '"value": 13'
+        - '"name": "ZMWs shortcut filters",'
+        - '"value": 0'
+        - '"name": "CCS below minimum RQ",'
+        - '"value": 3'
