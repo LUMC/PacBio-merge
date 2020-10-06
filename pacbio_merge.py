@@ -23,6 +23,7 @@ def merge_legacy_count_dict(dictionaries):
 
     return merged
 
+
 def parse_PacBio_log(file_content):
     """ Parse ccs log file """
     data = dict()
@@ -73,6 +74,7 @@ def parse_PacBio_log(file_content):
             data[name] = linedata
 
     return data
+
 
 def parse_line(line):
     """ Parse a line from the ccs log file """
@@ -181,6 +183,7 @@ def write_subsection(data, letter, fout):
         for heading in counts:
             print(f'{heading} : {counts[heading]["count"]}', file=fout)
 
+
 def write_pacbio_report(merged, filename):
     """
     Write the merged data back into PacBio format
@@ -263,4 +266,8 @@ if __name__ == '__main__':
                         help='Parse legacy PacBio log files (prior to CCS '
                              'V5.0.0)')
     args = parser.parse_args()
+
+    if not args.legacy and args.PacBio_output:
+        msg = '--PacBio-output is only supported with legacy input'
+        raise RuntimeError(msg)
     main(args)

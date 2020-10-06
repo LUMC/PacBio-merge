@@ -31,3 +31,14 @@
         - 'Empty coverage windows.*: 0'
         - 'CCS did not converge.*: 0'
         - 'Unknown error.*: 0'
+- name: test-script-invalid-command
+  tags:
+    - integration
+  command: >
+    python3 pacbio_merge.py
+    --PacBio-output merged.txt
+    --reports test/v5.0.0/batch.1.march_chunk1.ccs.report.json test/v5.0.0/batch.1.march_chunk2.ccs.report.json
+  exit_code: 1
+  stderr:
+    contains:
+      - '--PacBio-output is only supported with legacy input'
