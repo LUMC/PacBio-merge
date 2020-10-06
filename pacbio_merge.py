@@ -6,7 +6,7 @@ import json
 import string
 
 
-def merge_count_dict(dictionaries):
+def merge_legacy_count_dict(dictionaries):
     """ Merge the specified dictionaries together on the 'count' keys """
     merged = dict()
 
@@ -17,7 +17,7 @@ def merge_count_dict(dictionaries):
                 merged[key] = value
             # If the value is another dictionary
             elif isinstance(value, dict):
-                    merged[key] = merge_count_dict([value, merged[key]])
+                    merged[key] = merge_legacy_count_dict([value, merged[key]])
             else:
                 merged[key] += value
 
@@ -138,7 +138,7 @@ def parse_line(line):
     return data
 
 
-def parse_files(filelist, write_inputs):
+def parse_legacy_files(filelist, write_inputs):
     dataset = list()
     for filename in filelist:
         with open(filename) as fin:
@@ -225,9 +225,10 @@ def write_pacbio_report(merged, filename):
 
 
 def main(args):
-    dataset = parse_files(args.reports, args.write_input_json)
-    # Merge the dictionaries
-    merged = merge_count_dict(dataset)
+    if args.legacy:
+        dataset = parse_legacy_files(args.reports, args.write_input_json)
+        # Merge the dictionaries
+        merged = merge_legacy_count_dict(dataset)
 
     if args.json_output:
         with open(args.json_output, 'wt') as fout:
@@ -256,5 +257,10 @@ if __name__ == '__main__':
                         required=False,
                         default=False,
                         help='Write the input files to json')
+    parser.add_argument('--legacy',
+                        default=False,
+                        action='store_true',
+                        help='Parse legacy PacBio log files (prior to CCS '
+                             'V5.0.0)')
     args = parser.parse_args()
     main(args)

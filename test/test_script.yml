@@ -1,0 +1,42 @@
+- name: test-legacy-script-json
+  tags:
+    - integration
+  command: >
+    python3 pacbio_merge.py
+    --legacy
+    --json-output merged.json
+    --reports test/legacy/batch.1.march.ccs.report.txt test/legacy/batch.1.march.ccs.report.txt
+  files:
+    - path: merged.json
+      contains:
+        - 'ZMWs input'
+        - '"count": 186'
+
+- name: test-legacy-script-PacBio
+  tags:
+    - integration
+  command: >
+    python3 pacbio_merge.py
+    --legacy
+    --PacBio-output merged.txt
+    --reports test/legacy/batch.1.march.ccs.report.txt test/legacy/batch.1.march.ccs.report.txt
+  files:
+    - path: merged.txt
+      contains_regex:
+        - 'ZMWs input.*: 186'
+        - 'ZMWs generating CCS.*: 88'
+        - 'ZMWs filtered.*: 98'
+        - 'Draft generation error.*: 2'
+        - 'CCS below minimum RQ.*: 12'
+        - 'Median length filter.*: 0'
+        - 'Below SNR threshold.*: 0'
+        - 'Heteroduplex insertions.*: 0'
+        - 'Coverage drops.*: 0'
+        - 'Insufficient draft cov.*: 0'
+        - 'Draft too different.*: 0'
+        - 'Draft above --max-length.*: 0' 
+        - 'Draft below --min-length.*: 0' 
+        - 'Reads failed polishing.*: 0'
+        - 'Empty coverage windows.*: 0'
+        - 'CCS did not converge.*: 0'
+        - 'Unknown error.*: 0'

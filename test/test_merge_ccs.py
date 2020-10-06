@@ -1,7 +1,7 @@
 import pytest
 import sys
 sys.path.insert(0, '.')
-from pacbio_merge import merge_count_dict
+from pacbio_merge import merge_legacy_count_dict
 
 # Testdata where we merge a dict into itself
 # Source dict, times, merged dict
@@ -15,5 +15,5 @@ TEST = [
 
 @pytest.mark.parametrize(['source', 'times', 'target'], TEST)
 def test_merge_dict(source, times, target):
-    merged = merge_count_dict([source]*times)
+    merged = merge_legacy_count_dict([source]*times)
     assert merged == target
