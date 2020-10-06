@@ -226,6 +226,7 @@ def write_pacbio_report(merged, filename):
             #    print(f'{entry} : {entry["count"]}')
     print(json.dumps(merged, indent=True))
 
+
 def parse_report_json(filelist):
     dataset = list()
     for filename in filelist:
@@ -242,6 +243,7 @@ def merge_json_reports(dataset):
         assert data['id'] == merged['id']
 
     return merged
+
 
 def main(args):
     if args.legacy:
