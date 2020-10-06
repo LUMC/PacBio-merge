@@ -1,26 +1,17 @@
-- name: test-legacy-script-json
+- name: test-legacy-script
   tags:
     - integration
   command: >
     python3 pacbio_merge.py
     --legacy
     --json-output merged.json
+    --PacBio-output merged.txt
     --reports test/legacy/batch.1.march.ccs.report.txt test/legacy/batch.1.march.ccs.report.txt
   files:
     - path: merged.json
       contains:
         - 'ZMWs input'
         - '"count": 186'
-
-- name: test-legacy-script-PacBio
-  tags:
-    - integration
-  command: >
-    python3 pacbio_merge.py
-    --legacy
-    --PacBio-output merged.txt
-    --reports test/legacy/batch.1.march.ccs.report.txt test/legacy/batch.1.march.ccs.report.txt
-  files:
     - path: merged.txt
       contains_regex:
         - 'ZMWs input.*: 186'
