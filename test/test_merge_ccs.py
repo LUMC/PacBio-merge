@@ -24,7 +24,8 @@ def jl(filename):
 # input dictionary, number of times, output dictionary
 TEST_JSON = [
         ([{'id': 'ccs_processing', 'attributes': []}], {'id': 'ccs_processing', 'attributes': []}),
-        ([jl('chunk1.json'), jl('chunk2.json')], jl('target.json'))
+        ([jl('chunk1.json'), jl('chunk2.json')], jl('target.json')),
+        ([jl('no_overlap1.json'), jl('no_overlap2.json')], jl('target.json')),
 ]
 
 # Testdata for dictionaries that should not be merged

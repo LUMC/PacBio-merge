@@ -250,6 +250,9 @@ def merge_json_reports(dataset):
             for merged_entry in attributes:
                 if entry['id'] == merged_entry['id']:
                     merged_entry['value']+=entry['value']
+                    break
+            else:  # We did not find 'id' in the merged attributes
+                attributes.append(entry)
 
     return merged
 

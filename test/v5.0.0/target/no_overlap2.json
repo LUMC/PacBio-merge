@@ -1,0 +1,29 @@
+{
+    "_comment": "Created by pbcopper v1.8.0",
+    "attributes": [
+        {
+            "id": "zmw_input",
+            "name": "ZMWs input",
+            "value": 23
+        },
+        {
+            "id": "zmw_passed_yield",
+            "name": "ZMWs pass filters",
+            "value": 10
+        },
+        {
+            "id": "zmw_filtered_yield",
+            "name": "ZMWs fail filters",
+            "value": 13
+        }
+    ],
+    "dataset_uuids": [
+        ""
+    ],
+    "id": "ccs_processing",
+    "plotGroups": [],
+    "tables": [],
+    "title": "CCS Processing Report",
+    "uuid": "a4eedb58-cae7-43bc-9a57-e86d62a969d4",
+    "version": "1.0.1"
+}
