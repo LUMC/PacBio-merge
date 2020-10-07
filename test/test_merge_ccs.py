@@ -1,6 +1,8 @@
 import pytest
 import sys
+import os
 sys.path.insert(0, '.')
+import json
 from pacbio_merge import merge_legacy_count_dict, merge_json_reports
 
 # Testdata where we merge a dict into itself
@@ -13,10 +15,16 @@ TEST_LEGACY = [
             {'count': 15}}}),
 ]
 
+def jl(filename):
+    """ Load json files from test/v5.0.0/target """
+    folder = 'test/v5.0.0/target'
+    return json.load(open(os.path.join(folder,filename)))
+
 # Testdata for PacBio json reports
-# input dictionary list, output dictionary
+# input dictionary, number of times, output dictionary
 TEST_JSON = [
         ([{'id': 'ccs_processing'}], {'id': 'ccs_processing'}),
+        #([jl('chunk1.json'), jl('chunk2.json')], jl('target.json'))
 ]
 
 # Testdata for dictionaries that should not be merged
