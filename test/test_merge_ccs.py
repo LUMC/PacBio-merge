@@ -23,13 +23,13 @@ def jl(filename):
 # Testdata for PacBio json reports
 # input dictionary, number of times, output dictionary
 TEST_JSON = [
-        ([{'id': 'ccs_processing'}], {'id': 'ccs_processing'}),
-        #([jl('chunk1.json'), jl('chunk2.json')], jl('target.json'))
+        ([{'id': 'ccs_processing', 'attributes': []}], {'id': 'ccs_processing', 'attributes': []}),
+        ([jl('chunk1.json'), jl('chunk2.json')], jl('target.json'))
 ]
 
 # Testdata for dictionaries that should not be merged
 TEST_INVALID_COMBINATION = [
-        ([{'id': 'ccs_processing'}, {'id': 'not_ccs_processing'}]),
+        ([{'id': 'ccs_processing', 'attributes': []}, {'id': 'not_ccs_processing', 'attributes': []}]),
 ]
 
 @pytest.mark.parametrize(['source', 'times', 'target'], TEST_LEGACY)

@@ -239,8 +239,17 @@ def parse_report_json(filelist):
 def merge_json_reports(dataset):
     """ Merge the json reports """
     merged = dataset.pop()
+    attributes = merged['attributes']
     for data in dataset:
         assert data['id'] == merged['id']
+        # Iterate over all dictionaries in the attributes list
+        for entry in data['attributes']:
+            # Iterate over all dictionary in the attributes list for the merged
+            # dictionary. Not very efficient, but who cares, the reports are
+            # small
+            for merged_entry in attributes:
+                if entry['id'] == merged_entry['id']:
+                    merged_entry['value']+=entry['value']
 
     return merged
 
